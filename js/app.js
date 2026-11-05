@@ -1,4 +1,4 @@
-/* ペア比べギャラリー（みんまちLounge）モックアップ v0.3
+/* Synced Emotion（みんまちLounge）モックアップ v0.4
  * 画面：ローディング → チュートリアル（初回）
  *   → STEP1 選ぶ：万博DROPSをスワイプし、いいなと思う4件にアクション
  *   → STEP2 比べる：選んだ4件それぞれに似ている街（中之島）のDROPSを並べ、共感したらリアクション
@@ -136,13 +136,13 @@
     SCREENS[name](params);
   }
   const SCREENS = {};
-  const stepBar = n => `<div class="stepbar">${['選ぶ', '比べる', '見つける'].map((l, k) =>
+  const stepBar = n => `<div class="stepbar">${['Find', 'Compare', 'In Tune'].map((l, k) =>
     `<span class="${k + 1 === n ? 'on' : k + 1 < n ? 'done' : ''}"><b>${k + 1}</b>${l}</span>`).join('<i></i>')}</div>`;
 
   /* ローディング */
   SCREENS.loading = () => {
     $app.innerHTML = `<section class="screen light"><div class="loading">
-      <div class="logo"><span class="l1">みんまちLounge</span><span class="l2">ペア比べ<br>ギャラリー</span></div>
+      <div class="logo"><span class="l1">みんまちLounge</span><span class="l2 en">Synced<br>Emotion</span></div>
       <div class="loadbar"><i></i></div></div></section>`;
   };
 
@@ -161,7 +161,7 @@
   SCREENS.tutorial = () => {
     const slides = [
       { h: '万博で生まれた<br>“まちのいい”', p: `万博のDROPSをスワイプして、<br>いいなと思うものを${C.pickCount}つ選んでください。`, art: 'expo' },
-      { h: '中之島にも、<br>きっとある。', p: '選んだDROPSに似ている、中之島のDROPSと<br>見比べます。共感したら「わかる！」。', art: 'pair' },
+      { h: '中之島にも、<br>きっとある。', p: '選んだDROPSに似ている、中之島のDROPSと<br>見比べます。共感したら「Synced」。', art: 'pair' },
       { h: 'いまの気分から、<br>次の“いい”へ。', p: 'あなたの気分を判定して、<br>おすすめのDROPSをお届けします。', art: 'mood' },
     ];
     const art = {
@@ -216,13 +216,13 @@
           <button class="nav-arrow" id="prev" aria-label="前へ" ${S.pos ? '' : 'disabled'}>‹</button>
           <button class="pick-btn ${picked ? 'on' : ''}" id="pickBtn" aria-pressed="${picked}">
             <svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 3c3 4.2 6 7.6 6 11a6 6 0 0 1-12 0c0-3.4 3-6.8 6-11z" fill="${picked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.6"/></svg>
-            <span>${picked ? '選びました' : 'いいね'}</span></button>
+            <span>${picked ? 'Picked' : 'Pick'}</span></button>
           <button class="nav-arrow" id="next" aria-label="次へ" ${S.pos < list.length - 1 ? '' : 'disabled'}>›</button>
         </div>
       </div>
       ${full ? `<div class="sheet ${sheetMin ? 'min' : ''}" id="sheet"><div class="sheet-t">${C.pickCount}つ選びました</div>
         <div class="sheet-s">中之島の、似ているDROPSと比べてみましょう。</div>
-        <button class="btn-round" id="toCompare">比べにすすむ ⇄</button>
+        <button class="btn-round" id="toCompare">Compare ⇄</button>
         <button class="sheet-sub" id="keep">選びなおす</button></div>` : ''}
     </div></section>`;
 
@@ -250,6 +250,8 @@
       store.save();
       burst($b);
       $b.classList.add('on');
+      $b.querySelector('span').textContent = 'Picked';
+      $b.querySelector('path').setAttribute('fill', 'currentColor');
       track('pick_expo', { artwork_id: d.id, count: S.picks.length });
       // 選んだら次の投稿へ（ザッピング感覚を保つ）。4件そろったらその場で比べる案内を出す
       later(() => {
@@ -293,8 +295,8 @@
       </div>
       <div class="cmp-actions">
         <button class="nav-arrow" id="prev" aria-label="前へ">‹</button>
-        <button class="wakaru ${on ? 'on' : ''}" id="wakaru" aria-pressed="${on}">わかる！<small>${on ? '共感しました' : 'タップで共感'}</small></button>
-        <button class="nav-arrow ${last ? 'go' : ''}" id="next" aria-label="${last ? '気分を判定する' : '次へ'}">${last ? '判定' : '›'}</button>
+        <button class="wakaru ${on ? 'on' : ''}" id="wakaru" aria-pressed="${on}"><span class="wk-en">${on ? 'Synced' : 'Sync'}</span><small>${on ? '共感しました' : 'タップで共感'}</small></button>
+        <button class="nav-arrow ${last ? 'go' : ''}" id="next" aria-label="${last ? '気分を判定する' : '次へ'}">${last ? 'In Tune →' : '›'}</button>
       </div>
       <div class="skip-note center">押さなくても先へ進めます</div>
     </div></section>`;
@@ -319,6 +321,7 @@
       $w.classList.toggle('on', v);
       $w.setAttribute('aria-pressed', v);
       $w.querySelector('small').textContent = v ? '共感しました' : 'タップで共感';
+      $w.querySelector('.wk-en').textContent = v ? 'Synced' : 'Sync';
       if (v) burst($w);
       track(v ? 'click_wakaru' : 'cancel_wakaru', { expo_id: p.expo.id, town_id: p.town.id });
     };
@@ -360,14 +363,14 @@
 
       <div class="odai-box" style="--c:${color}"><small>中之島で探すお題</small><p>${esc(top[0].odai)}</p></div>
       <div class="btns">
-        <a class="btn-round" id="dropLink" href="${C.dropUrl}" target="_blank" rel="noopener">みんまちDROPで続きを見る ↗</a>
+        <a class="btn-round" id="dropLink" href="${C.dropUrl}" target="_blank" rel="noopener">Go to みんまちDROP ↗</a>
         <button class="btn-ghost" id="share">結果をシェア</button>
         <button class="btn-ghost" id="again">もう一度選ぶ</button>
       </div></div></section>`;
     document.getElementById('dropLink').onclick = () => track('click_minmachi_drop', { from: 'cta' });
     $app.querySelectorAll('.rec').forEach(a => a.onclick = () => track('click_minmachi_drop', { from: 'recommend', artwork_id: a.dataset.id }));
     document.getElementById('share').onclick = async () => {
-      const text = `いまのわたしは「${label}」気分。万博と中之島の“まちのいい”を見比べる体験 #みんまちLounge`;
+      const text = `いまのわたしは「${label}」気分。万博と中之島の“まちのいい”を見比べる体験 Synced Emotion #みんまちLounge`;
       track('share_result');
       try { if (navigator.share) await navigator.share({ text }); else { await navigator.clipboard.writeText(text); toast('結果テキストをコピーしました'); } } catch {}
     };
@@ -421,7 +424,7 @@
     const g = document.createElement('div');
     g.className = 'guide';
     g.innerHTML = `<div class="hand">👆</div><p><b>左右にスワイプ</b>で万博のDROPSを見ていきます</p>
-      <p>いいなと思ったら <b>「いいね」</b>。<br>${C.pickCount}つ選んだら、中之島と比べます</p><button class="btn-round">OK</button>`;
+      <p>いいなと思ったら <b>「Pick」</b>。<br>${C.pickCount}つ選んだら、中之島と比べます</p><button class="btn-round">OK</button>`;
     document.querySelector('.pair').appendChild(g);
     g.onclick = () => { S.guideDone = true; store.save(); g.remove(); };
   }

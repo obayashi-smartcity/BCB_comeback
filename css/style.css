@@ -251,3 +251,12 @@ a { color: inherit; }
 .odai-box small { font-size: 10px; letter-spacing: .14em; color: var(--c); font-weight: 700; }
 .odai-box p { margin: 4px 0 0; font-family: var(--mincho); font-weight: 700; font-size: 16px; }
 .result .btns a.btn-round { text-decoration: none; }
+
+/* ===== v0.4 名称・ボタン ===== */
+:root { --serif-en: 'Cormorant Garamond', 'Shippori Mincho', serif; }
+.logo .l2.en { font-family: var(--serif-en); font-weight: 600; font-size: 40px; letter-spacing: .04em; line-height: 1.05; }
+.logo .l2.en::first-line { font-style: italic; }
+.stepbar span { font-family: var(--serif-en); font-size: 14px; letter-spacing: .06em; font-weight: 600; }
+.stepbar span b { font-family: var(--sans); }
+.pick-btn span { font-family: var(--serif-en); font-size: 20px; font-weight: 600; letter-spacing: .1em; font-style: italic; }
+.wakaru .wk-en { font-family: var(--serif-en); font-size: 26px; font-weight: 600; font-style: italic; letter-spacing: .04em; line-height: 1; }
